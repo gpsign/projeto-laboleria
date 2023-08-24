@@ -2,6 +2,7 @@ import {
 	insertOrder,
 	selectOrders,
 	selectOrderById,
+	selectOrderByClientId,
 } from "../repositories/orders.repository.js";
 
 export async function postOrder(req, res) {
@@ -31,6 +32,18 @@ export async function getOrderById(req, res) {
 	const { id } = req.params;
 	try {
 		const orders = await selectOrderById(id);
+		if (!orders.rows[0]) return res.sendStatus(404);
+		else return res.status(200).send(orders.rows);
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send(error);
+	}
+}
+
+export async function getOrderByClientId(req, res){
+	const { id } = req.params;
+	try {
+		const orders = await selectOrderByClientId(id);
 		if (!orders.rows[0]) return res.sendStatus(404);
 		else return res.status(200).send(orders.rows);
 	} catch (error) {

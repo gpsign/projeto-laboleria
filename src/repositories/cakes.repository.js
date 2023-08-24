@@ -5,7 +5,7 @@ export function insertCake(cake) {
 
 	return db.query(
 		`INSERT INTO cakes (name, price, image, description) VALUES ($1, $2, $3, $4);`,
-		[name, price, image, description]
+		[name, parseFloat(price).toFixed(2), image, description]
 	);
 }
 

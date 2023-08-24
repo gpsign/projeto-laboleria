@@ -27,7 +27,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.cakes (
     id integer NOT NULL,
     name character varying(40) NOT NULL,
-    price numeric(2,0) NOT NULL,
+    price numeric(10,2) NOT NULL,
     description text,
     image text NOT NULL
 );
@@ -95,7 +95,7 @@ CREATE TABLE public.orders (
     cakeid integer NOT NULL,
     quantity integer NOT NULL,
     createdat timestamp without time zone DEFAULT now() NOT NULL,
-    totalprice numeric(4,2) NOT NULL
+    totalprice numeric(10,2) NOT NULL
 );
 
 

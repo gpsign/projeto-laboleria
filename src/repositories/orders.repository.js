@@ -4,7 +4,7 @@ export function insertOrder(order) {
 	const { clientId, cakeId, quantity, totalPrice } = order;
 	return db.query(
 		`INSERT INTO orders (clientId, cakeId, quantity, totalPrice) VALUES ($1, $2, $3, $4);`,
-		[clientId, cakeId, quantity, totalPrice]
+		[clientId, cakeId, quantity, parseFloat(totalPrice).toFixed(2)]
 	);
 }
 
@@ -42,4 +42,20 @@ export function selectOrders(date) {
 
 export function selectOrderById(id) {
 	return db.query(`${orderQueryBody} WHERE o.id = $1;`, [id]);
+}
+
+export function selectOrderByClientId(id) {
+	return db.query(
+		`
+	SELECT 
+		o.id AS "orderId", 
+		o.quantity, 
+		TO_CHAR(o.createdAt, 'YYYY-MM-DD HH24:MM') AS "createdAt", 
+		o.totalPrice AS "totalPrice", 
+		c.name AS "cakeName" 
+	FROM orders o
+	INNER JOIN cakes c ON o.cakeId = c.id 
+	WHERE o.clientId = $1;`,
+		[id]
+	);
 }
