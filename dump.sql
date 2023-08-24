@@ -126,7 +126,8 @@ CREATE TABLE public.orders (
     cakeid integer NOT NULL,
     quantity integer NOT NULL,
     createdat timestamp without time zone DEFAULT now() NOT NULL,
-    totalprice numeric(10,2) NOT NULL
+    totalprice numeric(10,2) NOT NULL,
+    isdelivered boolean DEFAULT false NOT NULL
 );
 
 
@@ -183,8 +184,9 @@ ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.order
 --
 
 INSERT INTO public.cakes VALUES (1, 'bolo 1', 999.99, 1, '1', 'https://www.youtube.com');
-INSERT INTO public.cakes VALUES (2, 'bolo 2', 1.23, 1, '2', 'https://www.youtube.com');
-INSERT INTO public.cakes VALUES (5, 'bolo 3', 1.23, 1, '2', 'https://www.youtube.com');
+INSERT INTO public.cakes VALUES (5, 'bolo 2', 999.99, 1, '1', 'https://www.youtube.com');
+INSERT INTO public.cakes VALUES (10, 'bolo 3', 999.99, 1, '1', 'https://www.youtube.com');
+INSERT INTO public.cakes VALUES (13, 'bolo 7', 999.99, 1, '1', 'https://www.youtube.com');
 
 
 --
@@ -206,14 +208,14 @@ INSERT INTO public.flavours VALUES (1, 'abacaxi');
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.orders VALUES (1, 1, 1, 2, '2023-08-24 11:59:12.27151', 3.21);
+INSERT INTO public.orders VALUES (3, 1, 1, 2, '2023-08-24 14:03:20.054024', 3.00, true);
 
 
 --
 -- Name: cakes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.cakes_id_seq', 5, true);
+SELECT pg_catalog.setval('public.cakes_id_seq', 15, true);
 
 
 --
@@ -234,7 +236,15 @@ SELECT pg_catalog.setval('public.flavours_id_seq', 1, true);
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 1, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 3, true);
+
+
+--
+-- Name: cakes cakes_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cakes
+    ADD CONSTRAINT cakes_name_key UNIQUE (name);
 
 
 --
@@ -274,7 +284,7 @@ ALTER TABLE ONLY public.orders
 --
 
 ALTER TABLE ONLY public.cakes
-    ADD CONSTRAINT cakes_flavourid_fkey FOREIGN KEY (flavourid) REFERENCES public.flavours(id);
+    ADD CONSTRAINT cakes_flavourid_fkey FOREIGN KEY (flavourid) REFERENCES public.flavours(id) ON DELETE CASCADE;
 
 
 --
@@ -282,7 +292,7 @@ ALTER TABLE ONLY public.cakes
 --
 
 ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT orders_cakeid_fkey FOREIGN KEY (cakeid) REFERENCES public.cakes(id);
+    ADD CONSTRAINT orders_cakeid_fkey FOREIGN KEY (cakeid) REFERENCES public.cakes(id) ON DELETE CASCADE;
 
 
 --
@@ -290,7 +300,7 @@ ALTER TABLE ONLY public.orders
 --
 
 ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT orders_clientid_fkey FOREIGN KEY (clientid) REFERENCES public.clients(id);
+    ADD CONSTRAINT orders_clientid_fkey FOREIGN KEY (clientid) REFERENCES public.clients(id) ON DELETE CASCADE;
 
 
 --
