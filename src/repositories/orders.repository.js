@@ -24,7 +24,8 @@ const orderQueryBody = `
 				'description', ca.description,
 				'image', ca.image
 			) AS cake,
-			o.id AS "orderId",
+			o.id AS "orderId", 
+			o.isDelivered AS "isDelivered", 
 			TO_CHAR(o.createdAt, 'YYYY-MM-DD HH24:MM') AS "createdAt",
 			o.quantity,
 			o.totalPrice AS "totalPrice"
@@ -36,10 +37,10 @@ const orderQueryBody = `
 export function selectOrders(date) {
 	if (date)
 		return db.query(
-			`${orderQueryBody} WHERE CAST(TO_CHAR(o.createdAt, 'YYYY-MM-DD') AS TEXT) = $1;`,
+			`${orderQueryBody} WHERE CAST(TO_CHAR(o.createdAt, 'YYYY-MM-DD') AS TEXT) = $1 ORDER BY o.id;`,
 			[date]
 		);
-	else return db.query(`${orderQueryBody};`);
+	else return db.query(`${orderQueryBody} ORDER BY o.id;`);
 }
 
 export function selectOrderById(id) {
@@ -51,6 +52,7 @@ export function selectOrderByClientId(id) {
 		`
 	SELECT 
 		o.id AS "orderId", 
+		o.isDelivered AS "isDelivered", 
 		o.quantity, 
 		TO_CHAR(o.createdAt, 'YYYY-MM-DD HH24:MM') AS "createdAt", 
 		o.totalPrice AS "totalPrice", 
@@ -59,7 +61,14 @@ export function selectOrderByClientId(id) {
 	FROM orders o
 	INNER JOIN cakes c ON o.cakeId = c.id 
 	INNER JOIN flavours f ON c.flavourId = f.id 
-	WHERE o.clientId = $1;`,
+	WHERE o.clientId = $1
+	ORDER BY o.id;`,
 		[id]
 	);
+}
+
+export function updateDelivered(id) {
+	return db.query(`UPDATE orders o SET isDelivered = TRUE WHERE o.id = $1;`, [
+		id,
+	]);
 }
