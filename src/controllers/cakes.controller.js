@@ -8,6 +8,7 @@ export async function postCake(req, res) {
 		await insertCake(cake);
 		return res.sendStatus(201);
 	} catch (error) {
-		return res.status(400).send(error);
+		if (error.detail.includes("Key")) return res.status(404).send(error);
+		else return res.status(400).send(error);
 	}
 }

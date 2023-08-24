@@ -20,6 +20,7 @@ export async function getOrders(req, res) {
 	const { date } = req.query;
 	try {
 		const orders = await selectOrders(date);
+		console.log(orders.rows);
 		if (!orders.rows[0]) return res.status(404).send([]);
 		else return res.status(200).send(orders.rows);
 	} catch (error) {

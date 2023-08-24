@@ -20,6 +20,7 @@ const orderQueryBody = `
 				'id', ca.id,
 				'name', ca.name,
 				'price', ca.price,
+				'flavour', fl.name,
 				'description', ca.description,
 				'image', ca.image
 			) AS cake,
@@ -29,7 +30,8 @@ const orderQueryBody = `
 			o.totalPrice AS "totalPrice"
 		FROM orders o
 		INNER JOIN clients cl ON o.clientId = cl.id
-		INNER JOIN cakes ca ON o.cakeId = ca.id`;
+		INNER JOIN cakes ca ON o.cakeId = ca.id
+		INNER JOIN flavours fl ON ca.flavourId = fl.id`;
 
 export function selectOrders(date) {
 	if (date)
@@ -52,9 +54,11 @@ export function selectOrderByClientId(id) {
 		o.quantity, 
 		TO_CHAR(o.createdAt, 'YYYY-MM-DD HH24:MM') AS "createdAt", 
 		o.totalPrice AS "totalPrice", 
-		c.name AS "cakeName" 
+		c.name AS "cakeName", 
+		f.name AS "cakeFlavour"
 	FROM orders o
 	INNER JOIN cakes c ON o.cakeId = c.id 
+	INNER JOIN flavours f ON c.flavourId = f.id 
 	WHERE o.clientId = $1;`,
 		[id]
 	);
