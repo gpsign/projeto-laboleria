@@ -12,7 +12,8 @@ export async function postOrder(req, res) {
 		await insertOrder(order);
 		return res.sendStatus(201);
 	} catch (error) {
-		if (error.detail.includes("Key")) return res.status(404).send(error);
+		if (error.detail.includes("is not present in table"))
+			return res.status(404).send(error);
 		else return res.status(400).send(error);
 	}
 }
@@ -64,7 +65,8 @@ export async function patchOrder(req, res) {
 		return res.sendStatus(204);
 	} catch (error) {
 		console.log(error);
-		if (error.detail.includes("Key")) return res.status(404).send(error);
+		if (error.detail.includes("is not present in table"))
+			return res.status(404).send(error);
 		else return res.status(400).send(error);
 	}
 }

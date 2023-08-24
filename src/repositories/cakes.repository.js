@@ -8,7 +8,3 @@ export function insertCake(cake) {
 		[name, parseFloat(price).toFixed(2), flavourId, image, description]
 	);
 }
-
-export function getCakeByName(name) {
-	return db.query(`SELECT * FROM cakes WHERE name = $1;`, [name]);
-}
